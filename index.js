@@ -47,8 +47,8 @@ if (process.env.MODE === 'development') {
   server = https.createServer({
     // key: fs.readFileSync('/etc/letsencrypt/live/interviewbot.com.au/privkey.pem'),
     // cert: fs.readFileSync('/etc/letsencrypt/live/interviewbot.com.au/fullchain.pem')
-    key: fs.readFileSync('/etc/letsencrypt/live/interviewbot.com.au/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/interviewbot.com.au/certificate.pem')
+    key: fs.readFileSync('privkey.pem'),
+    cert: fs.readFileSync('certificate.pem')
   }, app)
 }
 
