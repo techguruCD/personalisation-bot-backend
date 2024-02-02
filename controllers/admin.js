@@ -24,3 +24,20 @@ exports.updateFindOutMore = async (req, res) => {
     })
   }
 }
+
+exports.updateHomeSetting = async (req, res) => {
+  try {
+    const {key, value} = req.body;
+    const homeSetting = await db.homeSetting.findOne({})
+    await homeSetting.update({
+      [key]: value
+    })
+    return res.json({
+      message: {success: 'Updated successfully'}
+    })
+  } catch (err) {
+    return res.status(500).send({
+      message: {error: 'Please try again later'}
+    })
+  }
+}

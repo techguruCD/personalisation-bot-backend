@@ -10,6 +10,27 @@ const blog = validator.body(
   }).required()
 )
 
+const homeSetting = validator.body(
+  Joi.object({
+    key: Joi.string().min(1).valid(
+      'mainTitle', 
+      'subTitle', 
+      'text', 
+      'chatbotTitle',
+      'chatbotSubTitle',
+      'segmentTitle',
+      'segmentSubTitle',
+      'segmentLabel1',
+      'segmentLabel2',
+      'segmentLabel3',
+      'segmentLabel4',
+      'prompt',
+      ).required(),
+    value: Joi.string().min(1).required()
+  })
+)
+
 module.exports = {
-  blog
+  blog,
+  homeSetting
 }

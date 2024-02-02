@@ -17,8 +17,48 @@ module.exports = (sequelize, Sequelize) => {
         },
         text: {
             "type": Sequelize.STRING,
-            "allowNull": true,
+            "allowNull": false,
             defaultValue: `The wait is over. Now you can buy a Widget 2000 and have your widget dreams come true.`
+        },
+        chatbotTitle: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Widget Questions?`
+        },
+        chatbotSubTitle: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Chat to Our Bot!`
+        },
+        segmentTitle: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Behind the Scenes`
+        },
+        segmentSubTitle: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Real Time Segmentation`
+        },
+        segmentLabel1: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Segment`
+        },
+        segmentLabel2: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Chance%`
+        },
+        segmentLabel3: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Rationale`
+        },
+        segmentLabel4: {
+            "type": Sequelize.STRING,
+            "allowNull": false,
+            defaultValue: `Brochure`
         },
         prompt: {
             type: Sequelize.TEXT,
