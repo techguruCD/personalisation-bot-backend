@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const {v4: uuidv4} = require('uuid')
 
 module.exports = {
   pos: 0,
@@ -66,7 +67,7 @@ module.exports = {
       }
     })
     await queryInterface.bulkInsert('homeSettings', [{
-      id: '13dadf60-1436-4e49-a613-e446fddb4deb',
+      id: uuidv4(),
       createdAt: new Date(),
       updatedAt: new Date()
     }])

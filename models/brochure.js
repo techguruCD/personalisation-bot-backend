@@ -5,13 +5,22 @@ module.exports = (sequelize, Sequelize) => {
             "primaryKey": true,
             "defaultValue": Sequelize.UUIDV4
         },
-        title: {
+        number: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        segment: {
             "type": Sequelize.STRING,
             "allowNull": false
         },
-        content: {
+        charachteristics: {
             "type": Sequelize.TEXT,
             "allowNull": false,
+        },
+        file: {
+            type: Sequelize.STRING,
+            allowNull: true,
+            defaultValue: null,
         },
         createdAt: {
             "type": Sequelize.DATE,

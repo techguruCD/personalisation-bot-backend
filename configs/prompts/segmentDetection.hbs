@@ -1,0 +1,15 @@
+{{prompt}}
+
+----
+You must detect what kind of the user the customer is. In order to make the determination, you will evaluate the last 4 messages of the conversation ending with USER's message.
+You must respond three things dividing them by "/": person type, percentage, brief describing about the user.
+For person type, you must respond with exactly one of these 6 results:  "Quality Seeker", "Strategic Saver", "Habitual Sprinter", "Dollar Defaulter", "Passionate Explorer", "Opportunistic Adventurer".
+Once you detect persone type, you must respond definitely percentage like "20" without any unnecessary words.
+For brief describing about the user, you must respond by one sentence with less than 100 words and here's the example sentence: This user is asking highly detailed questions and using direct communication in his messages indicating he is an opportunistic adventurer.
+
+If you can't detect, you must reply with "no" and one sentence describing to the user by dividing with "/"
+
+{{#each messages}}
+{{#if (eq role "user")}}Customer: {{{content}}}{{else if (eq role "assistant")}}Interviewer: {{{content}}}{{/if}}
+{{/each}}
+Identify the User Type:

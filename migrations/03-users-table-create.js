@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcryptjs')
+const {v4: uuidv4} = require('uuid')
 
 const migrationCommands = function (transaction) {
   return [{
@@ -102,7 +103,7 @@ module.exports = {
   up: async function (queryInterface, Sequelize) {
     await this.execute(queryInterface, Sequelize, migrationCommands);
     queryInterface.bulkInsert('users', [{
-      id: '13dadf62-1336-4f49-a613-e146fd2b4deb',
+      id: uuidv4(),
       name: 'admin',
       email: 'admin@gmail.com',
       password: bcrypt.hashSync('1234567890', 8),

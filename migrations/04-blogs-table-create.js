@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const {v4: uuidv4} = require('uuid')
 
 const migrationCommands = function (transaction) {
   return [{
@@ -76,7 +77,7 @@ module.exports = {
   up: async function (queryInterface, Sequelize) {
     await this.execute(queryInterface, Sequelize, migrationCommands);
     await queryInterface.bulkInsert('blogs', [{
-        id: '13deee60-1222-4e49-a613-e446fddb4deb',
+        id: uuidv4(),
         content: `This is blog`,
         createdAt: new Date(),
         updatedAt: new Date()

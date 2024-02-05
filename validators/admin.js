@@ -24,13 +24,23 @@ const homeSetting = validator.body(
       'segmentLabel2',
       'segmentLabel3',
       'segmentLabel4',
+      'greeting',
       'prompt',
+      'widgetPrompt',
       ).required(),
     value: Joi.string().min(1).required()
   })
 )
 
+const botFiles = validator.query(
+  Joi.object({
+    page: Joi.number().min(1).required(),
+    pageSize: Joi.number().min(1).max(100).required()
+  })
+)
+
 module.exports = {
   blog,
-  homeSetting
+  homeSetting,
+  botFiles
 }

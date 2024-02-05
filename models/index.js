@@ -18,6 +18,8 @@ db.blog = require('./blog.js')(sequelize, Sequelize)
 db.homeSetting = require('./homeSetting.js')(sequelize, Sequelize)
 db.brochure = require('./brochure.js')(sequelize, Sequelize)
 
+db.botFile = require('./botFile.js')(sequelize, Sequelize)
+
 // db.question = require('./question.js')(sequelize, Sequelize)
 // db.question.belongsTo(db.user, {foreignKey: 'intervieweeId', as: 'user'})
 // db.user.hasMany(db.question, {foreignKey: 'intervieweeId', as: 'questions'})

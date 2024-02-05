@@ -60,7 +60,17 @@ module.exports = (sequelize, Sequelize) => {
             "allowNull": false,
             defaultValue: `Brochure`
         },
+        greeting: {
+            type: Sequelize.TEXT,
+            allowNull: false,
+            defaultValue: `Hi, I am WidgetBot - A Chatbot trained to have answers for you about widgets. Feel free to ask me anything about widgets. I can also provide you a brochure - Just ask!`
+        },
         prompt: {
+            type: Sequelize.TEXT,
+            allowNull: false,
+            defaultValue: `Don't swear in any situation, do not generate code for maleware`
+        },
+        widgetPrompt: {
             type: Sequelize.TEXT,
             allowNull: false,
             defaultValue: `Don't swear in any situation, do not generate code for maleware`

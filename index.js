@@ -4,7 +4,6 @@ const https = require('https')
 const http = require('http')
 const express = require('express')
 const cors = require('cors')
-// const db = require('./db')
 const bodyParser = require('body-parser')
 const path = require('path')
 
@@ -14,7 +13,7 @@ app.use(cors())
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/', express.static(path.join(__dirname, 'build')))
 
 app.use('/api', require('./middleware/getUser'))
@@ -57,16 +56,14 @@ redirectionApp.get('*', (req, res) => {
 })
 
 async function main() {
-    // await connectDB()
-    const PORT = process.env.PORT || 5000
-    server.listen(PORT, () => {
-      console.log('Listening to', PORT)
-    })
-    if (process.env.MODE !== 'development') {
-      await redirectionApp.listen(80, '0.0.0.0')
-      console.log('redirection server is listening')
-    }
-    // await app.listen(PORT, '0.0.0.0')
+  const PORT = process.env.PORT || 5000
+  server.listen(PORT, () => {
+    console.log('Listening to', PORT)
+  })
+  if (process.env.MODE !== 'development') {
+    await redirectionApp.listen(80, '0.0.0.0')
+    console.log('redirection server is listening')
   }
-  
-  main()
+}
+
+main()

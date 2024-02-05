@@ -137,6 +137,23 @@
     uuid "^9.0.0"
     zod "^3.22.3"
 
+"@langchain/core@~0.1":
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.22.tgz#b558f4675f5ad4dea473899362469220a96b4144"
+  integrity sha512-I3KMv87D5AFeAvuJhzaGOYdppFL4h/bRm7LeJfwF2PspQIZwvDE9GP7hkw4n+7jwNaBxjU8ZTj6o3LZAh1R5LQ==
+  dependencies:
+    ansi-styles "^5.0.0"
+    camelcase "6"
+    decamelize "1.2.0"
+    js-tiktoken "^1.0.8"
+    langsmith "~0.0.48"
+    ml-distance "^4.0.0"
+    p-queue "^6.6.2"
+    p-retry "4"
+    uuid "^9.0.0"
+    zod "^3.22.4"
+    zod-to-json-schema "^3.22.3"
+
 "@langchain/core@~0.1.13", "@langchain/core@~0.1.16":
   version "0.1.18"
   resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.18.tgz#8a1167801b4d97619771dc19c271f00dfdfb21da"
@@ -154,6 +171,17 @@
     zod "^3.22.4"
     zod-to-json-schema "^3.22.3"
 
+"@langchain/openai@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-0.0.14.tgz#27a6ba83f6b754391868b22f3b90cd440038acf0"
+  integrity sha512-co6nRylPrLGY/C3JYxhHt6cxLq07P086O7K3QaZH7SFFErIN9wSzJonpvhZR07DEUq6eK6wKgh2ORxA/NcjSRQ==
+  dependencies:
+    "@langchain/core" "~0.1.13"
+    js-tiktoken "^1.0.7"
+    openai "^4.26.0"
+    zod "^3.22.4"
+    zod-to-json-schema "^3.22.3"
+
 "@langchain/openai@~0.0.10", "@langchain/openai@~0.0.12":
   version "0.0.13"
   resolved "https://registry.yarnpkg.com/@langchain/openai/-/openai-0.0.13.tgz#0f5e288bf65247c6fb165688c2c56d93c065d720"
@@ -165,12 +193,22 @@
     zod "^3.22.4"
     zod-to-json-schema "^3.22.3"
 
+"@langchain/pinecone@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@langchain/pinecone/-/pinecone-0.0.2.tgz#0cc6b7f151ea5fc4d0eebaa9ab6b81a1933ac5e7"
+  integrity sha512-YDQt7Yv8Gh7VfTQTrOVlFc72LgAb/euF+qIolfvXcWpAwtsAnD87utSSmLQzsfa9aS/jPSUFW/Vx5AGbH+xmZw==
+  dependencies:
+    "@langchain/core" "~0.1"
+    "@pinecone-database/pinecone" "^2.0.0"
+    flat "^5.0.2"
+    uuid "^9.0.0"
+
 "@one-ini/wasm@0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
 
-"@pinecone-database/pinecone@^2.0.1":
+"@pinecone-database/pinecone@^2.0.0", "@pinecone-database/pinecone@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@pinecone-database/pinecone/-/pinecone-2.0.1.tgz#1dce6e06e299dfe2c26490aacffe1103e316b8fc"
   integrity sha512-a1ejzrqdSQ2yW+9QUi2TVlKwYUbrvGH+QH6POJhITyaOz9ANE+EhXqToC9af93Ctzq9n87+bOUvBvewLeW++Mw==
