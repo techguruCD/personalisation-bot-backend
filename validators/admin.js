@@ -27,6 +27,8 @@ const homeSetting = validator.body(
       'greeting',
       'prompt',
       'widgetPrompt',
+      'sitebotGreeting',
+      'sitebotPrompt'
       ).required(),
     value: Joi.string().min(1).required()
   })

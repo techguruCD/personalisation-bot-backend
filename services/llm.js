@@ -9,19 +9,19 @@ const { PineconeStore } = require('@langchain/pinecone')
 const { PDFLoader } = require('langchain/document_loaders/fs/pdf')
 const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
 
-Handlebars.registerHelper('eq', function(arg1, arg2) {
+Handlebars.registerHelper('eq', function (arg1, arg2) {
   return arg1 === arg2;
 });
 
-Handlebars.registerHelper('joinArray', function(array) {
+Handlebars.registerHelper('joinArray', function (array) {
   return array.join(', ');
 });
 
-Handlebars.registerHelper('toLowerCase', function(str) {
+Handlebars.registerHelper('toLowerCase', function (str) {
   return str.toLowerCase();
 });
 
-Handlebars.registerHelper('toUpperCase', function(str) {
+Handlebars.registerHelper('toUpperCase', function (str) {
   return str.toUpperCase();
 });
 
@@ -64,15 +64,18 @@ async function delFileEmbedding({ fileId }) {
   })
 }
 
-async function generateMessage({ prompt, messages }) {
-  const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
-  const inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { app: { $eq: process.env.APP } }))
-  inputDocs.sort((a, b) => b[1] - a[1])
-  let systemContent = ""
+async function generateMessage({ prompt, messages, userVectorDB = false, wordLimit = 1000 }) {
+  let inputDocs = []
+  if (userVectorDB) {
+    const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
+    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { app: { $eq: process.env.APP } }))
+    inputDocs.sort((a, b) => b[1] - a[1])
+  }
+  let systemContent = `Prompt:"${prompt}\nYou must respond with less than ${wordLimit} words.`
 
   for (let i = 5; i > 1; i--) {
     let inputDoc = inputDocs.slice(0, i).map((doc, index) => `- Document ${index + 1}: ${doc[0].pageContent}`).join('\n')
-    systemContent = `Similarity Docs: ${inputDoc}\n\nPrompt:"${prompt}\n********************************\n"`
+    systemContent = `Similarity Docs: ${inputDoc}\n\nPrompt:"${prompt}\nYou must respond with less than ${wordLimit} words."`
     if (systemContent.length <= 8192) break;
   }
 
@@ -101,7 +104,7 @@ async function getSegment({ prompt, messages }) {
   for (let i = 5; i > 1; i--) {
     // let inputDoc = inputDocs.slice(0, i).map((doc, index) => `- Document ${index + 1}: ${doc[0].pageContent}`).join('\n')
     systemContent = `${prompt}\nNow here are some of the setences that our customer said. You need to detect what kind of user the customer is. This determination is very important to my business. You don't need to reply any no-neccessary words. Just Definitely Respond by one of these 6 results as well as only definitely percentage like "20%": "Quality Seeke", "Strategic Saver", "Habitual Sprinter", "Dollar Defaulter", "Passionate Explorer", "Opportunistic Adventurer"\n`
-    systemContent += messages.map(message => (message.role==='assistant'?'Interviewer':'Customer') + ': ' + message.content).join('\n')
+    systemContent += messages.map(message => (message.role === 'assistant' ? 'Interviewer' : 'Customer') + ': ' + message.content).join('\n')
     systemContent += '\n\nIdentify the User Type:'
     // systemContent = `${prompt}\nNow here are some of the setences that our customer said. You need to detect what kind of user the customer is.`
     // systemContent += messages.filter(message => message.rol === 'Customer').map(message => "Customer: " + message.content).join('\n')
@@ -109,7 +112,7 @@ async function getSegment({ prompt, messages }) {
   }
 
   const content = segmentDetectionPrompt({
-    messages: messages.map(message => ({...message, content: message.content.replace(/[\n]/g, '. ')})),
+    messages: messages.map(message => ({ ...message, content: message.content.replace(/[\n]/g, '. ') })),
     prompt
   })
   console.log(content)

@@ -75,6 +75,16 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: `Don't swear in any situation, do not generate code for maleware`
         },
+        sitebotPrompt: {
+            type: Sequelize.TEXT,
+            allowNull: false,
+            defaultValue: `Don't swear in any situation, do not generate code for maleware`
+        },
+        sitebotGreeting: {
+            type: Sequelize.TEXT,
+            allowNull: false,
+            defaultValue: `Hi. I'm a chatbot which knows all about this site. How can I assist you?`
+        },
         createdAt: {
             "type": Sequelize.DATE,
             "allowNull": false,

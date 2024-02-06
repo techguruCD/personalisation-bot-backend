@@ -8,6 +8,8 @@ router.get('/me', requiresAuth, controller.me)
 router.get('/homeSetting', controller.homeSetting)
 router.get('/find-out-more', controller.findOutMore)
 router.post('/sendMessage', controller.sendMessage)
+router.post('/detect-segment', controller.detectSegment)
 router.get('/brochure', validator.brochure, controller.brochure)
+router.post('/sitebot-sendMessage', controller.sitebotSendMessage)
 
 module.exports = router;
