@@ -145,13 +145,14 @@ exports.brochureDelete = async (req, res) => {
 
 exports.botFiles = async (req, res) => {
   try {
-    let { page, pageSize } = req.query
+    let { page, pageSize, type } = req.query
     page = Number(page)
     pageSize = Number(pageSize)
-    const totalCount = await db.botFile.count({});
+    const totalCount = await db.botFile.count({where: {type}});
     const totalPage = Math.ceil(totalCount / pageSize) || 1
     if (page > totalPage) page = totalPage
     const botFiles = await db.botFile.findAll({
+      where: {type},
       offset: (page - 1) * pageSize,
       limit: pageSize
     })
@@ -170,7 +171,7 @@ exports.botFiles = async (req, res) => {
 
 exports.botFileUpload = async (req, res) => {
   try {
-    const { data, name, content2Extension } = req.body;
+    const { data, name, content2Extension, type } = req.body;
     const base64Data = data.split(',')[1];
     const decodedData = Buffer.from(base64Data, 'base64')
     const fileName = `/uploads/botFiles/${uuidv4()}.${content2Extension}`
@@ -184,10 +185,11 @@ exports.botFileUpload = async (req, res) => {
     fs.writeFileSync(filePath, decodedData)
     const botFile = await db.botFile.create({
       path: fileName,
-      name
+      name,
+      type
     })
     try {
-      await llm.saveFileEmbedding({ filePath, fileId: String(botFile.id) })
+      await llm.saveFileEmbedding({ type, filePath, fileId: String(botFile.id) })
     } catch (err) {
       await db.botFile.destroy({ where: { id: botFile.id } })
       throw (err)

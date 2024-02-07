@@ -37,7 +37,8 @@ const homeSetting = validator.body(
 const botFiles = validator.query(
   Joi.object({
     page: Joi.number().min(1).required(),
-    pageSize: Joi.number().min(1).max(100).required()
+    pageSize: Joi.number().min(1).max(100).required(),
+    type: Joi.string().min(1).valid('sitewidebot', 'widgetbot', 'detectionbot')
   })
 )
 

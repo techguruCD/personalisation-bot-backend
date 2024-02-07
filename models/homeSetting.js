@@ -85,6 +85,16 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: `Hi. I'm a chatbot which knows all about this site. How can I assist you?`
         },
+        widgetbotIndex: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+        sitewidebotIndex: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
         createdAt: {
             "type": Sequelize.DATE,
             "allowNull": false,

@@ -40,11 +40,12 @@ const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX_NAME)
 // const pineconeStore = new PineconeStore(embeddings, { pineconeIndex })
 const openAIClient = new OpenAIClient(process.env.AZURE_OPENAI_BASE_URL, new AzureKeyCredential(process.env.AZURE_OPENAI_KEY))
 
-async function saveFileEmbedding({ filePath, fileId }) {
+async function saveFileEmbedding({ type, filePath, fileId }) {
   const loader = new PDFLoader(filePath)
   const docs = (await loader.load()).map(doc => ({
     pageContent: doc.pageContent,
     metadata: {
+      type,
       app: process.env.APP,
       fileId
     }
@@ -64,18 +65,18 @@ async function delFileEmbedding({ fileId }) {
   })
 }
 
-async function generateMessage({ prompt, messages, userVectorDB = false, wordLimit = 1000 }) {
+async function generateMessage({ type, prompt, messages, useVectorDB = false, wordLimit = 1000 }) {
   let inputDocs = []
-  if (userVectorDB) {
+  if (useVectorDB) {
     const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
-    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { app: { $eq: process.env.APP } }))
+    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { type: {$eq: type}, app: { $eq: process.env.APP } }))
     inputDocs.sort((a, b) => b[1] - a[1])
   }
-  let systemContent = `Prompt:"${prompt}\nYou must respond with less than ${wordLimit} words.`
+  let systemContent = `Prompt:"${prompt}`
 
   for (let i = 5; i > 1; i--) {
     let inputDoc = inputDocs.slice(0, i).map((doc, index) => `- Document ${index + 1}: ${doc[0].pageContent}`).join('\n')
-    systemContent = `Similarity Docs: ${inputDoc}\n\nPrompt:"${prompt}\nYou must respond with less than ${wordLimit} words."`
+    systemContent = `Similarity Docs: ${inputDoc}\n\nPrompt:"${prompt}"`
     if (systemContent.length <= 8192) break;
   }
 
@@ -95,33 +96,30 @@ async function generateMessage({ prompt, messages, userVectorDB = false, wordLim
 
 const segmentDetectionPrompt = Handlebars.compile(fs.readFileSync(path.join(__dirname, '../configs/prompts/segmentDetection.hbs'), 'utf8'))
 
-async function getSegment({ prompt, messages }) {
+async function getSegment({ prompt, messages, useVectorDB = false }) {
   const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
-  // const inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { app: { $eq: process.env.APP } }))
-  // inputDocs.sort((a, b) => b[1] - a[1])
+  let inputDocs = []
+  if (useVectorDB) {
+    const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
+    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { type: {$eq: 'detectionbot'}, app: { $eq: process.env.APP } }))
+    inputDocs.sort((a, b) => b[1] - a[1])
+  }
   let systemContent = ""
 
   for (let i = 5; i > 1; i--) {
-    // let inputDoc = inputDocs.slice(0, i).map((doc, index) => `- Document ${index + 1}: ${doc[0].pageContent}`).join('\n')
-    systemContent = `${prompt}\nNow here are some of the setences that our customer said. You need to detect what kind of user the customer is. This determination is very important to my business. You don't need to reply any no-neccessary words. Just Definitely Respond by one of these 6 results as well as only definitely percentage like "20%": "Quality Seeke", "Strategic Saver", "Habitual Sprinter", "Dollar Defaulter", "Passionate Explorer", "Opportunistic Adventurer"\n`
-    systemContent += messages.map(message => (message.role === 'assistant' ? 'Interviewer' : 'Customer') + ': ' + message.content).join('\n')
-    systemContent += '\n\nIdentify the User Type:'
-    // systemContent = `${prompt}\nNow here are some of the setences that our customer said. You need to detect what kind of user the customer is.`
-    // systemContent += messages.filter(message => message.rol === 'Customer').map(message => "Customer: " + message.content).join('\n')
+    systemContent = segmentDetectionPrompt({
+      inputDoc: inputDocs.slice(0, i).map((doc, index) => doc[0].pageContent).join('\n'),
+      messages: messages.map(message => ({ ...message, content: message.content.replace(/[\n]/g, '. ') })),
+      prompt
+    })
     if (systemContent.length <= 8192) break;
   }
-
-  const content = segmentDetectionPrompt({
-    messages: messages.map(message => ({ ...message, content: message.content.replace(/[\n]/g, '. ') })),
-    prompt
-  })
-  console.log(content)
 
   try {
     const result = await openAIClient.getChatCompletions(process.env.AZURE_OPENAI_CHAT_DEPLOYMENT_ID, [
       {
         role: 'system',
-        content
+        content: systemContent
       }
     ])
     return result.choices?.[0]?.message?.content

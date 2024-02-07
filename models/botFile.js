@@ -18,6 +18,11 @@ module.exports = (sequelize, Sequelize) => {
         defaultValue: Sequelize.NOW,
         allowNull: false
       },
+      type: {
+        type: Sequelize.STRING,
+        defaultValue: 'sitebot',
+        allowNull: false
+      },
       updatedAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
