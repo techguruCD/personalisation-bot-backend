@@ -7,6 +7,7 @@ const { Pinecone } = require('@pinecone-database/pinecone')
 // const { PineconeStore } = require('langchain/vectorstores/pinecone')
 const { PineconeStore } = require('@langchain/pinecone')
 const { PDFLoader } = require('langchain/document_loaders/fs/pdf')
+const { DocxLoader } = require('langchain/document_loaders/fs/docx')
 const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
 
 Handlebars.registerHelper('eq', function (arg1, arg2) {
@@ -41,15 +42,28 @@ const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX_NAME)
 const openAIClient = new OpenAIClient(process.env.AZURE_OPENAI_BASE_URL, new AzureKeyCredential(process.env.AZURE_OPENAI_KEY))
 
 async function saveFileEmbedding({ type, filePath, fileId }) {
-  const loader = new PDFLoader(filePath)
-  const docs = (await loader.load()).map(doc => ({
-    pageContent: doc.pageContent,
-    metadata: {
-      type,
-      app: process.env.APP,
-      fileId
-    }
-  }))
+  let docs = null;
+  if (filePath.toLowerCase().endsWith(".docx")) {
+    const loader = new DocxLoader(filePath)
+    docs = (await loader.load()).map(doc => ({
+      pageContent: doc.pageContent,
+      metadata: {
+        type,
+        app: process.env.APP,
+        fileId
+      }
+    }))
+  } else {
+    const loader = new PDFLoader(filePath)
+    docs = (await loader.load()).map(doc => ({
+      pageContent: doc.pageContent,
+      metadata: {
+        type,
+        app: process.env.APP,
+        fileId
+      }
+    }))
+  }
   const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
   await vectorStore.addDocuments(docs)
 }
@@ -69,7 +83,7 @@ async function generateMessage({ type, prompt, messages, useVectorDB = false, wo
   let inputDocs = []
   if (useVectorDB) {
     const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
-    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { type: {$eq: type}, app: { $eq: process.env.APP } }))
+    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { type: { $eq: type }, app: { $eq: process.env.APP } }))
     inputDocs.sort((a, b) => b[1] - a[1])
   }
   let systemContent = `Prompt:"${prompt}`
@@ -101,7 +115,7 @@ async function getSegment({ prompt, messages, useVectorDB = false }) {
   let inputDocs = []
   if (useVectorDB) {
     const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex })
-    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { type: {$eq: 'detectionbot'}, app: { $eq: process.env.APP } }))
+    inputDocs = (await vectorStore.similaritySearchWithScore(messages[messages.length - 1].content, 5, { type: { $eq: 'detectionbot' }, app: { $eq: process.env.APP } }))
     inputDocs.sort((a, b) => b[1] - a[1])
   }
   let systemContent = ""
