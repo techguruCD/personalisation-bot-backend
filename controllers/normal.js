@@ -35,7 +35,7 @@ exports.sendMessage = (req, res) => {
   let { messages } = req.body
   db.homeSetting.findOne({})
     .then(homeSetting => {
-      llm.generateMessage({ prompt: homeSetting.prompt, useVectorDB: true, messages, wordLimit: 100 })
+      llm.generateMessage({ prompt: homeSetting.prompt, useVectorDB: true, messages, wordLimit: 100, type: 'widgetbot' })
         .then(content => {
           if (!content) {
             throw ('no content')
@@ -114,7 +114,7 @@ exports.sitebotSendMessage = async (req, res) => {
   try {
     let { messages } = req.body
     const homeSetting = await db.homeSetting.findOne({})
-    const content = await llm.generateMessage({ prompt: homeSetting.sitebotPrompt, messages, useVectorDB: true, wordLimit: 100 })
+    const content = await llm.generateMessage({ prompt: homeSetting.sitebotPrompt, type: 'sitewidebot', messages, useVectorDB: true, wordLimit: 100 })
 
     if (!content) {
       throw ('no content')
