@@ -5,14 +5,14 @@ Here is Similarity Doc:
 
 {{prompt}}
 
-Here's the contersation between our interviewer and customer;
+Here's the conversation between our interviewer and customer;
 ----------------------------------------------
 {{#each messages}}
 {{#if (eq role "user")}}Customer: {{{content}}}{{else if (eq role "assistant")}}Interviewer: {{{content}}}{{/if}}
 {{/each}}
 -----------------------------------------------
 
-You must detect what kind of the user the customer is. In order to make the determination, you will evaluate the last 4 messages of the conversation ending with USER's message.
+You must detect what kind of the user the customer is. In order to make the determination, you will evaluate the whole messages of the conversation ending with USER's message.
 You must respond three things dividing them by "/": person type, percentage, brief describing about the user.
 For person type, you must respond with exactly one of these 6 results:  "Quality Seeker", "Strategic Saver", "Habitual Sprinter", "Dollar Defaulter", "Passionate Explorer", "Opportunistic Adventurer".
 Once you detect persone type, you must respond definitely percentage of detection correction like "20" without any unnecessary words.
