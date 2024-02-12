@@ -139,7 +139,7 @@ exports.widgetbotHistory = async (req, res) => {
       percentage: segment?.percentage || 0,
       rationale: segment?.rationale || null,
       number: segment?.brochure?.number || 0,
-      chatHistory: chatHistory?.map(history => history.role==='user'?'User: ':'Bot: ' + history.content).join('\n') || null,
+      chatHistory: chatHistory?.map(history => (history.role==='user'?'User: ':'Bot: ') + history.content).join('\n\n') || null,
       type
     })
   } catch (err) {
