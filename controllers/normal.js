@@ -130,7 +130,7 @@ exports.sitebotSendMessage = async (req, res) => {
 
 exports.widgetbotHistory = async (req, res) => {
   try {
-    const { chatbotIndex, question, answer, segment, type } = req.body;
+    const { chatbotIndex, question, answer, segment, type, chatHistory } = req.body;
     await db.chatbotQuestion.create({
       chatbotIndex,
       question,
@@ -139,6 +139,7 @@ exports.widgetbotHistory = async (req, res) => {
       percentage: segment?.percentage || 0,
       rationale: segment?.rationale || null,
       number: segment?.brochure?.number || 0,
+      chatHistory: chatHistory?.map(history => history.role==='user'?'User: ':'Bot: ' + history.content).join('\n') || null,
       type
     })
   } catch (err) {

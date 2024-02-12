@@ -44,6 +44,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false
       },
+      chatHistory: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+        defaultValue: null
+      },
       createdAt: {
         type: Sequelize.DATE,
         field: "createdAt",
