@@ -101,7 +101,7 @@ async function generateMessage({ type, prompt, messages, useVectorDB = false, wo
         content: systemContent
       },
       ...messages
-    ])
+    ], {temperature: 0})
     return result.choices?.[0]?.message?.content
   } catch (err) {
     return null;
@@ -135,7 +135,7 @@ async function getSegment({ prompt, messages, useVectorDB = false }) {
         role: 'system',
         content: systemContent
       }
-    ])
+    ], {temperature: 0})
     return result.choices?.[0]?.message?.content
   } catch (err) {
     return null;
