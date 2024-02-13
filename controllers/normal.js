@@ -78,7 +78,8 @@ exports.detectSegment = (req, res) => {
               brochure,
               percentage: percentage || 0,
               rationale: rationale || 'The user has not provided enough information yet.'
-            }
+            },
+            detection: segmentDetectionContent
           })
         }).catch(err => {
           console.log(err)
@@ -130,7 +131,7 @@ exports.sitebotSendMessage = async (req, res) => {
 
 exports.widgetbotHistory = async (req, res) => {
   try {
-    const { chatbotIndex, question, answer, segment, type, chatHistory } = req.body;
+    const { chatbotIndex, question, answer, segment, type, chatHistory, detection } = req.body;
     await db.chatbotQuestion.create({
       chatbotIndex,
       question,
@@ -140,7 +141,8 @@ exports.widgetbotHistory = async (req, res) => {
       rationale: segment?.rationale || null,
       number: segment?.brochure?.number || 0,
       chatHistory: chatHistory?.map(history => (history.role==='user'?'User: ':'Bot: ') + history.content).join('\n\n') || null,
-      type
+      detection: detection || null,
+      type,
     })
   } catch (err) {
     console.log(err)

@@ -44,6 +44,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false
       },
+      detection: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+        defaultValue: null
+      },
       chatHistory: {
         type: Sequelize.TEXT,
         allowNull: true,
